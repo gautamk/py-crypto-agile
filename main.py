@@ -1,6 +1,6 @@
 from crypto_agile.agility import encipher, decipher
 
-INPUT_FILE = '/home/gautam/Pictures/Selection_006.png'
+INPUT_FILE = '/home/gautam/Pictures/IMG_20151204_122021.jpg'
 OUTPUT_CIPHER_TEXT = "/tmp/cipher_text"
 OUTPUT_PLAIN_TEXT = '/tmp/plain_text'
 KEY = "somekey"

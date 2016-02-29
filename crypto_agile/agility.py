@@ -23,7 +23,7 @@ def encipher(key, plain_text_stream, version_class=Version1):
 
     # 4bytes
     stream_object.write(struct.pack(LITTLE_ENDIAN_UNSIGNED_INT, version.VERSION_NUMBER))
-    # 4 bytes
+    # 4bytes
     stream_object.write(struct.pack(LITTLE_ENDIAN_UNSIGNED_INT, msg_len))
 
     # 32 bytes

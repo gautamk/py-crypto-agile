@@ -23,7 +23,7 @@ class Version1(VersionSpec):
     PADDING = padding.PKCS7(BLOCK_SIZE_IN_BITS)
     """
         - AES-256-CBC
-        - PKCS7
+        - PKCS7 Padding
         - PBKDF2_HMAC
             - PKCS#5
             - SHA256
