@@ -1,13 +1,23 @@
 import unittest
 
-from crypto_agile.version1 import Version1
+from crypto_agile.versions.version1 import Version1
 
 
 class TestVersion1(unittest.TestCase):
     def test_simple(self):
         version1 = Version1()
-        print version1.encipher(
-            "some_key",
-            "some_message"
+        original_plain_text = "Some Message"
+        key = "some key"
+        cipher_dict = version1.encipher(
+            key,
+            original_plain_text
         )
-        self.fail()
+        plain_text = version1.decipher(
+            key=key,
+            message=cipher_dict['cipher_text'],
+            initialization_vector=cipher_dict['initialization_vector'],
+            salt=cipher_dict['salt']
+        )
+        print cipher_dict
+        print plain_text
+        self.assertEqual(original_plain_text, plain_text)

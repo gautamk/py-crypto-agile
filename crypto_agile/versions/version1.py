@@ -7,18 +7,20 @@ from cryptography.hazmat.primitives.ciphers.algorithms import AES
 from cryptography.hazmat.primitives.kdf import pbkdf2
 
 from crypto_agile.constants import BITS_256_IN_BYTES
-from crypto_agile.version_spec import VersionSpec
+from crypto_agile.versions.version_spec import VersionSpec
 
 
 class Version1(VersionSpec):
+    VERSION_NUMBER = 1
     ITERATIONS = 100000
     BACKEND = default_backend()
-    BLOCK_SIZE = AES.block_size / 8
+    BLOCK_SIZE_IN_BITS = AES.block_size
+    BLOCK_SIZE_IN_BYTES = BLOCK_SIZE_IN_BITS / 8
     ALGORITHM = AES
     MODE = modes.CBC
     KDF = pbkdf2.PBKDF2HMAC
     HASH = hashes.SHA256
-    PADDING = padding.PKCS7(AES.block_size)
+    PADDING = padding.PKCS7(BLOCK_SIZE_IN_BITS)
     """
         - AES-256-CBC
         - PKCS7
@@ -30,11 +32,10 @@ class Version1(VersionSpec):
             - 100,000 rounds
     """
 
-    def generate_cipher(self, key, salt):
+    def generate_cipher(self, key, initialization_vector, salt):
         kdf = self.generate_kdf(salt)
         secure_key = kdf.derive(key)
-        initialization_vector = os.urandom(self.BLOCK_SIZE)
-        return initialization_vector, Cipher(
+        return Cipher(
             algorithm=self.ALGORITHM(secure_key),
             mode=self.MODE(initialization_vector),
             backend=self.BACKEND)
@@ -50,13 +51,18 @@ class Version1(VersionSpec):
     def encipher(self, key, message):
         super(Version1, self).encipher(key, message)
         salt = os.urandom(BITS_256_IN_BYTES)
-        initialization_vector, cipher = self.generate_cipher(key, salt)
+        initialization_vector = os.urandom(self.BLOCK_SIZE_IN_BYTES)
+        cipher = self.generate_cipher(key, initialization_vector, salt)
         encryptor = cipher.encryptor()
         padder = self.PADDING.padder()
         padded_message = padder.update(message) + padder.finalize()
         cipher_text = encryptor.update(padded_message) + encryptor.finalize()
-        return {
-            "salt": salt,
-            "initialization_vector": initialization_vector,
-            "cipher_text": cipher_text
-        }
+        return salt, initialization_vector, cipher_text
+
+    def decipher(self, key, message, salt, initialization_vector):
+        cipher = self.generate_cipher(key, initialization_vector, salt)
+        decryptor = cipher.decryptor()
+        plain_text = decryptor.update(message) + decryptor.finalize()
+        unpadder = self.PADDING.unpadder()
+        unpadded_data = unpadder.update(plain_text) + unpadder.finalize()
+        return unpadded_data
