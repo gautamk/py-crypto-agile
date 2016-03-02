@@ -21,3 +21,30 @@ The file header specifies information on the encryption algorithm, key derivatio
 
 ![](https://www.lucidchart.com/publicSegments/view/6f5a5901-beee-4580-99bc-c9d9710ef0a3/image.jpeg)
 
+
+## Version Spec
+
+### version number = 1
+        VERSION_NUMBER = 1
+        ITERATIONS = 100000
+        ALGORITHM = AES
+        MODE = modes.CBC
+        BLOCK_SIZE = 128 bits
+        KEY_SIZE = 256 bits
+        KDF = PBKDF2_HMAC
+        HASH = SHA256
+        PADDING = PKCS7
+        HMAC = SHA256-HMAC
+
+### version number = 2
+        VERSION_NUMBER = 2
+        ITERATIONS = 100000
+        ALGORITHM = 3DES
+        MODE = modes.CBC
+        BLOCK_SIZE = 64 bits
+        KEY_SIZE = 192 bits
+        KDF = PBKDF2_HMAC
+        HASH = SHA256
+        PADDING = PKCS7
+        HMAC = SHA256-HMAC
+
