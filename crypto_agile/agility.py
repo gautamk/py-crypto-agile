@@ -3,8 +3,6 @@ import StringIO
 from crypto_agile.util import int_to_bytes, bytes_to_int
 from crypto_agile.versions.version1 import Version1
 
-LITTLE_ENDIAN_UNSIGNED_INT = '<I'
-
 VERSION_CLASSES = {
     1: Version1
 }
