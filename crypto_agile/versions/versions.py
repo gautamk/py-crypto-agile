@@ -13,11 +13,11 @@ class Version1(VersionSpec):
     VERSION_NUMBER = 1
     ITERATIONS = 100000
     BACKEND = default_backend()
-    BLOCK_SIZE_IN_BITS = AES.block_size
-    BLOCK_SIZE_IN_BYTES = BLOCK_SIZE_IN_BITS / 8
-    KEY_SIZE = BITS_256_IN_BYTES
     ALGORITHM = AES
     MODE = modes.CBC
+    BLOCK_SIZE_IN_BITS = ALGORITHM.block_size
+    BLOCK_SIZE_IN_BYTES = BLOCK_SIZE_IN_BITS / 8
+    KEY_SIZE = BITS_256_IN_BYTES
     KDF = pbkdf2.PBKDF2HMAC
     HASH = hashes.SHA256
     PADDING = padding.PKCS7(BLOCK_SIZE_IN_BITS)
