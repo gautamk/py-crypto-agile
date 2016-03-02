@@ -48,7 +48,7 @@ def decipher(key, cipher_text_stream):
 
     msg_len = bytes_to_int(cipher_text_stream.read(4))
 
-    hmac_signature = cipher_text_stream.read(32)
+    hmac_signature = cipher_text_stream.read(version_class.HASH.digest_size)
 
     salt = cipher_text_stream.read(version_class.KEY_SIZE)
     initialization_vector = cipher_text_stream.read(version_class.BLOCK_SIZE_IN_BYTES)

@@ -15,5 +15,9 @@ source: http://crypto.stackexchange.com/a/31041/28190
 
 # Implementation
 Cryptoagility in this app is primarily built into the header. 
-The file header specifies information on the encryption algorithm, key derivation function
+The file header specifies information on the encryption algorithm, key derivation function, hashing algorithm etc.
+
+## File format
+
+![](https://www.lucidchart.com/publicSegments/view/6f5a5901-beee-4580-99bc-c9d9710ef0a3/image.jpeg)
 
