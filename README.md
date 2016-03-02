@@ -48,3 +48,24 @@ The file header specifies information on the encryption algorithm, key derivatio
         PADDING = PKCS7
         HMAC = SHA256-HMAC
 
+
+## Key Generation
+
+    key_master = KDF(password_from_user,
+                        algorithm=version_spec.HASH,
+                        length=version_spec.KEY_SIZE,
+                        salt=salt,
+                        iterations=version_spec.ITERATIONS)
+
+    key_encrypt =  KDF(key_master,
+                        algorithm=version_spec.HASH,
+                        length=version_spec.KEY_SIZE,
+                        salt='SALT_ENCRYPT',
+                        iterations=version_spec.ITERATIONS)
+    
+    key_hmac =  KDF(key_master,
+                        algorithm=version_spec.HASH,
+                        length=version_spec.KEY_SIZE,
+                        salt='SALT_HMAC',
+                        iterations=version_spec.ITERATIONS)
+     

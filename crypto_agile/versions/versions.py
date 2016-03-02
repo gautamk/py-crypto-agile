@@ -26,7 +26,7 @@ class Version1(VersionSpec):
         - AES-256-CBC
         - PKCS7 Padding
         - PBKDF2_HMAC
-            - PKCS#5
+            - PKCS#7
             - SHA256
             - Input_password
             - salt(length=256bits)
