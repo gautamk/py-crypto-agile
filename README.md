@@ -16,6 +16,7 @@ source: http://crypto.stackexchange.com/a/31041/28190
 # Implementation
 Cryptoagility in this app is primarily built into the header. 
 The file header specifies information on the encryption algorithm, key derivation function, hashing algorithm etc.
+**All crypto primitives are from Cryptography.io** .
 
 ## File format
 
