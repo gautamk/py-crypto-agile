@@ -14,7 +14,7 @@ class TestVersion1(unittest.TestCase):
         )
         plain_text = version1.decipher(
             key=key,
-            message=cipher_dict['cipher_text'],
+            cipher_text=cipher_dict['cipher_text'],
             initialization_vector=cipher_dict['initialization_vector'],
             salt=cipher_dict['salt']
         )

@@ -1,6 +1,6 @@
 import StringIO
-import struct
 
+from crypto_agile.util import int_to_bytes, bytes_to_int
 from crypto_agile.versions.version1 import Version1
 
 LITTLE_ENDIAN_UNSIGNED_INT = '<I'
@@ -16,22 +16,24 @@ def generate_header():
 
 def encipher(key, plain_text_stream, version_class=Version1):
     version = version_class()
-    salt, initialization_vector, cipher_text = version.encipher(key, plain_text_stream.read())
-    msg_len = len(cipher_text)
+    cipher_dict = version.encipher(key, plain_text_stream.read())
 
     stream_object = StringIO.StringIO()
 
     # 4bytes
-    stream_object.write(struct.pack(LITTLE_ENDIAN_UNSIGNED_INT, version.VERSION_NUMBER))
+    stream_object.write(int_to_bytes(version.VERSION_NUMBER))
     # 4bytes
-    stream_object.write(struct.pack(LITTLE_ENDIAN_UNSIGNED_INT, msg_len))
+    stream_object.write(int_to_bytes(cipher_dict['msg_len']))
 
     # 32 bytes
-    stream_object.write(salt)
-    # 16 bytes
-    stream_object.write(initialization_vector)
+    stream_object.write(cipher_dict['hmac'])
 
-    stream_object.write(cipher_text)
+    # 32 bytes
+    stream_object.write(cipher_dict['salt'])
+    # 16 bytes
+    stream_object.write(cipher_dict['initialization_vector'])
+
+    stream_object.write(cipher_dict['cipher_text'])
 
     result = stream_object.getvalue()
     stream_object.close()
@@ -39,15 +41,21 @@ def encipher(key, plain_text_stream, version_class=Version1):
 
 
 def decipher(key, cipher_text_stream):
-    version_number = struct.unpack(LITTLE_ENDIAN_UNSIGNED_INT, cipher_text_stream.read(4))[0]
+    version_number = bytes_to_int(cipher_text_stream.read(4))
     version_class = VERSION_CLASSES[version_number]
     version = version_class()
 
-    msg_len = struct.unpack(LITTLE_ENDIAN_UNSIGNED_INT, cipher_text_stream.read(4))[0]
+    msg_len = bytes_to_int(cipher_text_stream.read(4))
+
+    hmac_signature = cipher_text_stream.read(32)
 
     salt = cipher_text_stream.read(32)
     initialization_vector = cipher_text_stream.read(16)
 
     cipher_text = cipher_text_stream.read(msg_len)
 
-    return version.decipher(key, cipher_text, salt, initialization_vector)
+    return version.decipher(key=key,
+                            cipher_text=cipher_text,
+                            salt=salt, signature=hmac_signature,
+                            initialization_vector=initialization_vector,
+                            msg_len=msg_len)
