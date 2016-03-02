@@ -22,16 +22,6 @@ class Version1(VersionSpec):
     HASH = hashes.SHA256
     PADDING = padding.PKCS7(BLOCK_SIZE_IN_BITS)
     MAC = HMAC
-    """
-        - AES-256-CBC
-        - PKCS7 Padding
-        - PBKDF2_HMAC
-            - PKCS#7
-            - SHA256
-            - Input_password
-            - salt(length=256bits)
-            - 100,000 rounds
-    """
 
 
 class Version2(VersionSpec):

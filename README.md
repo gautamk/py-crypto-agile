@@ -55,7 +55,7 @@ The file header specifies information on the encryption algorithm, key derivatio
     key_master = KDF(password_from_user,
                         algorithm=version_spec.HASH,
                         length=version_spec.KEY_SIZE,
-                        salt=salt,
+                        salt=salt_from_header,
                         iterations=version_spec.ITERATIONS)
 
     key_encrypt =  KDF(key_master,
