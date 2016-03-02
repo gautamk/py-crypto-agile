@@ -68,4 +68,8 @@ The file header specifies information on the encryption algorithm, key derivatio
                         length=version_spec.KEY_SIZE,
                         salt='SALT_HMAC',
                         iterations=version_spec.ITERATIONS)
-     
+
+## HMAC Generation / Verification
+
+    
+    hmac( key_hmac, concat( initialization_vector, cipher_text, msg_len ) , version_spec.HASH)
