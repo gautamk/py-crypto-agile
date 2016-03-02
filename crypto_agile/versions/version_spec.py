@@ -38,7 +38,7 @@ class VersionSpec(object):
         hmac.update(int_to_bytes(msg_len))
         return hmac.finalize()
 
-    def generate_cipher(self, key, initialization_vector, salt):
+    def generate_cipher(self, key, initialization_vector):
         return Cipher(
             algorithm=self.ALGORITHM(key),
             mode=self.MODE(initialization_vector),
@@ -69,7 +69,7 @@ class VersionSpec(object):
         initialization_vector = os.urandom(self.BLOCK_SIZE_IN_BYTES)
         key_master, key_encrypt, key_hmac = self.generate_secure_keys(key, salt)
 
-        cipher = self.generate_cipher(key_encrypt, initialization_vector, salt)
+        cipher = self.generate_cipher(key_encrypt, initialization_vector)
         encryptor = cipher.encryptor()
         padded_message = self.pad_data(plain_text)
         cipher_text = encryptor.update(padded_message) + encryptor.finalize()
@@ -93,7 +93,7 @@ class VersionSpec(object):
     def decipher(self, key, cipher_text, salt, signature, initialization_vector, msg_len):
         key_master, key_encrypt, key_hmac = self.generate_secure_keys(key, salt)
 
-        cipher = self.generate_cipher(key_encrypt, initialization_vector, salt)
+        cipher = self.generate_cipher(key_encrypt, initialization_vector)
         decryptor = cipher.decryptor()
         plain_text = decryptor.update(cipher_text) + decryptor.finalize()
         unpadded_data = self.unpad_data(plain_text)

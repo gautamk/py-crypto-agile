@@ -1,10 +1,11 @@
 import StringIO
 
 from crypto_agile.util import int_to_bytes, bytes_to_int
-from crypto_agile.versions.versions import Version1
+from crypto_agile.versions.versions import Version1, Version2
 
 VERSION_CLASSES = {
-    1: Version1
+    1: Version1,
+    2: Version2
 }
 
 
@@ -12,7 +13,8 @@ def generate_header():
     pass
 
 
-def encipher(key, plain_text_stream, version_class=Version1):
+def encipher(key, plain_text_stream, version_number=1):
+    version_class = VERSION_CLASSES[version_number]
     version = version_class()
     cipher_dict = version.encipher(key, plain_text_stream.read())
 
@@ -26,9 +28,10 @@ def encipher(key, plain_text_stream, version_class=Version1):
     # 32 bytes
     stream_object.write(cipher_dict['hmac'])
 
-    # 32 bytes
+    # key_size of algorithm
     stream_object.write(cipher_dict['salt'])
-    # 16 bytes
+
+    # block_size of algorithm
     stream_object.write(cipher_dict['initialization_vector'])
 
     stream_object.write(cipher_dict['cipher_text'])
@@ -47,8 +50,8 @@ def decipher(key, cipher_text_stream):
 
     hmac_signature = cipher_text_stream.read(32)
 
-    salt = cipher_text_stream.read(32)
-    initialization_vector = cipher_text_stream.read(16)
+    salt = cipher_text_stream.read(version_class.KEY_SIZE)
+    initialization_vector = cipher_text_stream.read(version_class.BLOCK_SIZE_IN_BYTES)
 
     cipher_text = cipher_text_stream.read(msg_len)
 

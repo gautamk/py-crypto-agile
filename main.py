@@ -1,18 +1,36 @@
-from crypto_agile.agility import encipher, decipher
+import argparse
+from getpass import getpass
 
-INPUT_FILE = '/home/gautam/Pictures/IMG_20151204_122021.jpg'
-OUTPUT_CIPHER_TEXT = "/tmp/cipher_text"
-OUTPUT_PLAIN_TEXT = '/tmp/plain_text'
-KEY = "somekey"
+from crypto_agile.agility import encipher, decipher, VERSION_CLASSES
 
-with open(INPUT_FILE, 'rb') as f:
-    result = encipher(KEY, plain_text_stream=f)
 
-with open(OUTPUT_CIPHER_TEXT, 'wb') as f:
-    f.write(result)
+def encrypt(version, key, input_file, output_file):
+    result = encipher(key=key,
+                      plain_text_stream=input_file,
+                      version_number=version)
+    output_file.write(result)
 
-with open(OUTPUT_CIPHER_TEXT, 'rb') as f:
-    result = decipher(KEY, f)
 
-with open(OUTPUT_PLAIN_TEXT, 'wb') as f:
-    f.write(result)
+def decrypt(key, input_file, output_file):
+    result = decipher(key=key, cipher_text_stream=input_file)
+    output_file.write(result)
+
+
+if __name__ == '__main__':
+    VERSIONS = VERSION_CLASSES.keys()
+    parser = argparse.ArgumentParser(description='A crypto agile app which can encrypt a files.')
+    parser.add_argument('action', choices=['encrypt', 'decrypt'])
+    parser.add_argument('input_file', type=argparse.FileType('rb'))
+    parser.add_argument('output_file', type=argparse.FileType('wb'))
+    parser.add_argument('-V', '--algorithm_version', choices=VERSIONS, default=VERSIONS[0])
+    parser.add_argument('--key')
+
+    args = parser.parse_args()
+
+    if not args.key:
+        args.key = getpass('encryption key or password ?:')
+
+    if args.action == 'encrypt':
+        encrypt(args.algorithm_version, args.key, args.input_file, args.output_file)
+    elif args.action == 'decrypt':
+        decrypt(args.key, args.input_file, args.output_file)
