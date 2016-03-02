@@ -1,7 +1,7 @@
 import StringIO
 
 from crypto_agile.util import int_to_bytes, bytes_to_int
-from crypto_agile.versions.version1 import Version1
+from crypto_agile.versions.versions import Version1
 
 VERSION_CLASSES = {
     1: Version1

@@ -1,6 +1,6 @@
 import unittest
 
-from crypto_agile.versions.version1 import Version1
+from crypto_agile.versions.versions import Version1
 
 
 class TestVersion1(unittest.TestCase):
